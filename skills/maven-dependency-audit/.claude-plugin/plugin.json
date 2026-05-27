@@ -1,0 +1,13 @@
+{
+  "name": "maven-dependency-audit",
+  "description": "Audit Maven dependencies for outdated versions, security vulnerabilities, and conflicts.",
+  "version": "1.0.0",
+  "author": {
+    "name": "MarlinL",
+    "url": "https://github.com/marlinl"
+  },
+  "homepage": "https://github.com/marlinl/agentic-harness/tree/main/skills/maven-dependency-audit",
+  "repository": "https://github.com/marlinl/agentic-harness",
+  "license": "BSD-2-Clause",
+  "skills": "./"
+}

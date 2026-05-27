@@ -1,0 +1,13 @@
+{
+  "name": "jpa-patterns",
+  "description": "JPA and Hibernate patterns for N+1 queries, lazy loading, transactions, and fetching strategies.",
+  "version": "1.0.0",
+  "author": {
+    "name": "MarlinL",
+    "url": "https://github.com/marlinl"
+  },
+  "homepage": "https://github.com/marlinl/agentic-harness/tree/main/skills/jpa-patterns",
+  "repository": "https://github.com/marlinl/agentic-harness",
+  "license": "BSD-2-Clause",
+  "skills": "./"
+}

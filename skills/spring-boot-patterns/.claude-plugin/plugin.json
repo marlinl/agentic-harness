@@ -1,0 +1,13 @@
+{
+  "name": "spring-boot-patterns",
+  "description": "Spring Boot patterns for controllers, services, repositories, REST APIs, and exception handling.",
+  "version": "1.0.0",
+  "author": {
+    "name": "MarlinL",
+    "url": "https://github.com/marlinl"
+  },
+  "homepage": "https://github.com/marlinl/agentic-harness/tree/main/skills/spring-boot-patterns",
+  "repository": "https://github.com/marlinl/agentic-harness",
+  "license": "BSD-2-Clause",
+  "skills": "./"
+}

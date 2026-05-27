@@ -1,0 +1,13 @@
+{
+  "name": "test-quality",
+  "description": "Write high-quality JUnit 5 tests with AssertJ assertions and maintainable test structure.",
+  "version": "1.0.0",
+  "author": {
+    "name": "MarlinL",
+    "url": "https://github.com/marlinl"
+  },
+  "homepage": "https://github.com/marlinl/agentic-harness/tree/main/skills/test-quality",
+  "repository": "https://github.com/marlinl/agentic-harness",
+  "license": "BSD-2-Clause",
+  "skills": "./"
+}

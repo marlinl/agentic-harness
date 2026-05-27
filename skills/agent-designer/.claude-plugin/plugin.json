@@ -1,0 +1,13 @@
+{
+  "name": "agent-designer",
+  "description": "Design multi-agent systems, agent architectures, communication patterns, and autonomous workflows.",
+  "version": "1.0.0",
+  "author": {
+    "name": "MarlinL",
+    "url": "https://github.com/marlinl"
+  },
+  "homepage": "https://github.com/marlinl/agentic-harness/tree/main/skills/agent-designer",
+  "repository": "https://github.com/marlinl/agentic-harness",
+  "license": "BSD-2-Clause",
+  "skills": "./"
+}

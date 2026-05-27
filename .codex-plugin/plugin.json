@@ -1,7 +1,7 @@
 {
-  "name": "web-engineering",
+  "name": "agentic-harness",
   "version": "1.0.0",
-  "description": "Advanced engineering skills for Java 21/25, Spring Boot, JPA, testing, and clean code.",
+  "description": "Reusable Java web engineering skills for Java 21/25, Spring Boot, JPA, testing, and clean code.",
   "author": {
     "name": "MarlinL",
     "url": "https://github.com/marlinl"
@@ -19,8 +19,17 @@
   ],
   "skills": "./skills/",
   "interface": {
-    "displayName": "Web Engineering Skills",
+    "displayName": "Agentic Harness",
     "shortDescription": "Java web engineering skills for Codex",
-    "category": "Development"
+    "longDescription": "A set of reusable Java web engineering skills for Spring Boot, JPA/Hibernate, Maven, logging, testing, clean code, and multi-agent system design.",
+    "developerName": "MarlinL",
+    "category": "Development",
+    "capabilities": [
+      "Read",
+      "Write"
+    ],
+    "defaultPrompt": [
+      "Help me improve a Java Spring Boot service"
+    ]
   }
 }

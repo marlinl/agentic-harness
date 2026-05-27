@@ -1,34 +1,120 @@
 {
-    "name": "agentic-harness",
-    "owner": {
-        "name": "MarlinL",
-        "url": "https://github.com/marlinl"
+  "name": "agentic-harness",
+  "owner": {
+    "name": "MarlinL",
+    "url": "https://github.com/marlinl"
+  },
+  "description": "Platform-agnostic agent constraint framework with reusable skills for Java web engineering.",
+  "repository": "https://github.com/marlinl/agentic-harness",
+  "metadata": {
+    "version": "1.0.0",
+    "license": "BSD-2-Clause"
+  },
+  "plugins": [
+    {
+      "name": "agent-designer",
+      "source": "./skills/agent-designer",
+      "description": "Design multi-agent systems, agent architectures, communication patterns, and autonomous workflows.",
+      "version": "1.0.0",
+      "author": {
+        "name": "MarlinL"
+      },
+      "keywords": [
+        "agents",
+        "architecture",
+        "multi-agent"
+      ],
+      "category": "development"
     },
-    "description": "Platform-agnostic agent constraint framework with reusable skills for Java web engineering.",
-    "repository": "https://github.com/marlinl/agentic-harness",
-    "metadata": {
-        "version": "1.0.0",
-        "license": "BSD-2-Clause"
+    {
+      "name": "clean-code",
+      "source": "./skills/clean-code",
+      "description": "Clean Code principles, DRY, KISS, YAGNI, naming conventions, and function design.",
+      "version": "1.0.0",
+      "author": {
+        "name": "MarlinL"
+      },
+      "keywords": [
+        "clean-code",
+        "refactoring",
+        "java"
+      ],
+      "category": "development"
     },
-    "plugins": [
-        {
-            "name": "web-engineering",
-            "source": "./skills",
-            "description": "Advanced engineering skills for Java 21/25, Spring Boot, JPA, testing, and clean code.",
-            "version": "1.0.0",
-            "author": {
-                "name": "MarlinL"
-            },
-            "keywords": [
-                "java",
-                "spring",
-                "maven",
-                "test-quality",
-                "clean-code",
-                "jpa",
-                "logging"
-            ],
-            "category": "development"
-        }
-    ]
+    {
+      "name": "spring-boot-patterns",
+      "source": "./skills/spring-boot-patterns",
+      "description": "Spring Boot patterns for controllers, services, repositories, REST APIs, and exception handling.",
+      "version": "1.0.0",
+      "author": {
+        "name": "MarlinL"
+      },
+      "keywords": [
+        "spring",
+        "spring-boot",
+        "rest"
+      ],
+      "category": "development"
+    },
+    {
+      "name": "jpa-patterns",
+      "source": "./skills/jpa-patterns",
+      "description": "JPA and Hibernate patterns for N+1 queries, lazy loading, transactions, and fetching strategies.",
+      "version": "1.0.0",
+      "author": {
+        "name": "MarlinL"
+      },
+      "keywords": [
+        "jpa",
+        "hibernate",
+        "database"
+      ],
+      "category": "development"
+    },
+    {
+      "name": "logging-patterns",
+      "source": "./skills/logging-patterns",
+      "description": "Java logging patterns with SLF4J, structured logging, JSON logs, and MDC request tracing.",
+      "version": "1.0.0",
+      "author": {
+        "name": "MarlinL"
+      },
+      "keywords": [
+        "logging",
+        "slf4j",
+        "observability"
+      ],
+      "category": "development"
+    },
+    {
+      "name": "maven-dependency-audit",
+      "source": "./skills/maven-dependency-audit",
+      "description": "Audit Maven dependencies for outdated versions, security vulnerabilities, and conflicts.",
+      "version": "1.0.0",
+      "author": {
+        "name": "MarlinL"
+      },
+      "keywords": [
+        "maven",
+        "dependencies",
+        "security"
+      ],
+      "category": "development"
+    },
+    {
+      "name": "test-quality",
+      "source": "./skills/test-quality",
+      "description": "Write high-quality JUnit 5 tests with AssertJ assertions and maintainable test structure.",
+      "version": "1.0.0",
+      "author": {
+        "name": "MarlinL"
+      },
+      "keywords": [
+        "testing",
+        "junit",
+        "assertj"
+      ],
+      "category": "development"
+    }
+  ]
 }

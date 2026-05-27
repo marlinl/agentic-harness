@@ -1,0 +1,13 @@
+{
+  "name": "logging-patterns",
+  "description": "Java logging patterns with SLF4J, structured logging, JSON logs, and MDC request tracing.",
+  "version": "1.0.0",
+  "author": {
+    "name": "MarlinL",
+    "url": "https://github.com/marlinl"
+  },
+  "homepage": "https://github.com/marlinl/agentic-harness/tree/main/skills/logging-patterns",
+  "repository": "https://github.com/marlinl/agentic-harness",
+  "license": "BSD-2-Clause",
+  "skills": "./"
+}

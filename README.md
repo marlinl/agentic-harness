@@ -37,7 +37,7 @@ codex plugin marketplace add marlinl/agentic-harness
 **Claude Code:**
 ```bash
 /plugin marketplace add marlinl/agentic-harness
-/plugin install web-engineering
+/plugin install clean-code
 ```
 
 ## Structure
@@ -52,9 +52,15 @@ agentic-harness/
 │   └── plugins/
 │       └── marketplace.json  # Codex-native marketplace
 ├── skills/                   # Skills collection (shared by both agents)
-│   ├── SKILL.md              # Collection entry point
-│   ├── agent-designer/SKILL.md
-│   ├── clean-code/SKILL.md
+│   ├── agent-designer/
+│   │   ├── SKILL.md
+│   │   └── .claude-plugin/plugin.json
+│   ├── clean-code/
+│   │   ├── SKILL.md
+│   │   └── .claude-plugin/plugin.json
+│   ├── spring-boot-patterns/
+│   │   ├── SKILL.md
+│   │   └── .claude-plugin/plugin.json
 │   └── ...
 ├── AGENTS.md                 # Project-level instructions (Codex)
 ├── install.sh                # One-stop installer

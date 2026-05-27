@@ -18,5 +18,6 @@ Platform-agnostic agent constraint framework with reusable skills for Java web e
 
 1. Create `skills/<skill-name>/SKILL.md` with `name` and `description` frontmatter
 2. Keep the skill focused on one job
-3. Add the skill to the table in `skills/SKILL.md` and this file
-4. Test with Codex: restart and verify the skill appears in `/skills`
+3. Add `skills/<skill-name>/.claude-plugin/plugin.json` with `"skills": "./"`
+4. Add the skill to the table in this file and `.claude-plugin/marketplace.json`
+5. Test with Codex: restart and verify the skill appears in `/skills`

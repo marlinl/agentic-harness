@@ -1,0 +1,13 @@
+{
+  "name": "clean-code",
+  "description": "Clean Code principles, DRY, KISS, YAGNI, naming conventions, and function design.",
+  "version": "1.0.0",
+  "author": {
+    "name": "MarlinL",
+    "url": "https://github.com/marlinl"
+  },
+  "homepage": "https://github.com/marlinl/agentic-harness/tree/main/skills/clean-code",
+  "repository": "https://github.com/marlinl/agentic-harness",
+  "license": "BSD-2-Clause",
+  "skills": "./"
+}

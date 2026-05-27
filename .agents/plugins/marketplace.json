@@ -5,14 +5,14 @@
   },
   "plugins": [
     {
-      "name": "web-engineering",
+      "name": "agentic-harness",
       "source": {
         "source": "local",
         "path": "./"
       },
       "policy": {
         "installation": "AVAILABLE",
-        "authentication": "NONE"
+        "authentication": "ON_INSTALL"
       },
       "category": "Development"
     }
