@@ -2,11 +2,10 @@
 set -euo pipefail
 
 # Agentic Harness - OpenAI Codex CLI Adapter
-# Installs skills into .agents/skills/ (repo), ~/.agents/skills/ (user), or /etc/codex/skills/ (admin)
+# Installs skills by copying to .agents/skills/ (repo), ~/.agents/skills/ (user), /etc/codex/skills/ (admin)
 
 SKILLS_DIR=""
 SCOPE="repo"
-COLLECTION=""
 SKILL_NAME=""
 TARGET=""
 
@@ -17,9 +16,8 @@ Usage: $(basename "$0") --skills-dir <path> [OPTIONS]
 Install skills for OpenAI Codex CLI.
 
 Options:
-  --skills-dir <path>       Path to agentic-harness skills/ directory (required)
+  --skills-dir <path>       Path to agentic-harness repo root (required)
   --scope <repo|user|admin> Install scope (default: repo)
-  --collection <name>       Install a specific collection only
   --skill <name>            Install a specific skill only
   --target <path>           Target project directory for repo scope
   -h, --help                Show this help
@@ -34,12 +32,11 @@ EOF
 
 while [[ $# -gt 0 ]]; do
   case "$1" in
-    --skills-dir)   SKILLS_DIR="$2"; shift 2 ;;
-    --scope)        SCOPE="$2"; shift 2 ;;
-    --collection)   COLLECTION="$2"; shift 2 ;;
-    --skill)        SKILL_NAME="$2"; shift 2 ;;
-    --target)       TARGET="$2"; shift 2 ;;
-    -h|--help)      usage ;;
+    --skills-dir) SKILLS_DIR="$2"; shift 2 ;;
+    --scope)      SCOPE="$2"; shift 2 ;;
+    --skill)      SKILL_NAME="$2"; shift 2 ;;
+    --target)     TARGET="$2"; shift 2 ;;
+    -h|--help)    usage ;;
     *) echo "Unknown option: $1" >&2; exit 1 ;;
   esac
 done
@@ -50,7 +47,7 @@ if [[ -z "$SKILLS_DIR" ]]; then
 fi
 
 if [[ ! -d "$SKILLS_DIR" ]]; then
-  echo "Error: skills directory not found: $SKILLS_DIR" >&2
+  echo "Error: directory not found: $SKILLS_DIR" >&2
   exit 1
 fi
 
@@ -76,49 +73,30 @@ resolve_target_dir() {
 
 TARGET_DIR="$(resolve_target_dir)"
 
-# Find skill directories to install
+# Find skill directories to install.
+# Skills are directories at the repo root containing SKILL.md.
+# Directories starting with . are framework internals and skipped.
 find_skills() {
   local result=()
 
   if [[ -n "$SKILL_NAME" ]]; then
-    # Install a single skill — search across all collections
-    local found=0
-    for collection_dir in "$SKILLS_DIR"/*/; do
-      [[ -d "$collection_dir" ]] || continue
-      local skill_dir="$collection_dir$SKILL_NAME"
-      if [[ -d "$skill_dir" ]] && [[ -f "$skill_dir/SKILL.md" ]]; then
-        result+=("$skill_dir")
-        found=1
-        break
-      fi
-    done
-    if [[ $found -eq 0 ]]; then
-      echo "Error: Skill '$SKILL_NAME' not found in any collection" >&2
+    local skill_dir="$SKILLS_DIR/$SKILL_NAME"
+    if [[ -d "$skill_dir" ]] && [[ -f "$skill_dir/SKILL.md" ]]; then
+      result+=("$skill_dir")
+    else
+      echo "Error: Skill '$SKILL_NAME' not found" >&2
       exit 1
     fi
-  elif [[ -n "$COLLECTION" ]]; then
-    # Install all skills in a collection
-    local collection_dir="$SKILLS_DIR/$COLLECTION"
-    if [[ ! -d "$collection_dir" ]]; then
-      echo "Error: Collection '$COLLECTION' not found" >&2
-      exit 1
-    fi
-    for skill_dir in "$collection_dir"/*/; do
-      [[ -d "$skill_dir" ]] || continue
-      if [[ -f "$skill_dir/SKILL.md" ]]; then
-        result+=("$skill_dir")
-      fi
-    done
   else
-    # Install all skills from all collections
-    for collection_dir in "$SKILLS_DIR"/*/; do
-      [[ -d "$collection_dir" ]] || continue
-      for skill_dir in "$collection_dir"/*/; do
-        [[ -d "$skill_dir" ]] || continue
-        if [[ -f "$skill_dir/SKILL.md" ]]; then
-          result+=("$skill_dir")
-        fi
-      done
+    for dir in "$SKILLS_DIR"/*/; do
+      [[ -d "$dir" ]] || continue
+      local name
+      name="$(basename "$dir")"
+      # Skip hidden dirs (framework internals like .harness)
+      [[ "$name" == .* ]] && continue
+      if [[ -f "$dir/SKILL.md" ]]; then
+        result+=("$dir")
+      fi
     done
   fi
 
@@ -133,12 +111,10 @@ install_skill() {
 
   local dest="$TARGET_DIR/$skill_name"
 
-  # Remove existing if present
   if [[ -e "$dest" ]] || [[ -L "$dest" ]]; then
     rm -rf "$dest"
   fi
 
-  # Copy the skill folder
   cp -r "$src" "$dest"
 
   echo "  Installed: $skill_name"

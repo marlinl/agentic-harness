@@ -1,23 +1,53 @@
 # Agentic Harness
 
-Platform-agnostic agent constraint framework. Provides reusable skills, hooks, and scripts for AI coding agents.
+Platform-agnostic agent constraint framework. Provides reusable skills for AI coding agents.
 
-Currently supports: **Claude Code** and **OpenAI Codex CLI**.
+Supports: **Claude Code** and **OpenAI Codex CLI**.
 
-## Quick Start
+## Installation
+
+### Method 1: git clone (推荐)
+
+Clone directly into the agent's skills directory — no extra steps needed.
 
 ```bash
-# Install all skills for Codex CLI (repo scope)
-./install.sh --adapter codex
+# Codex CLI — project-level (as submodule)
+git submodule add <repo-url> .agents/skills/web-engineering
 
-# Install all skills for Claude Code (repo scope)
-./install.sh --adapter claude-code
+# Codex CLI — user-level
+git clone <repo-url> ~/.agents/skills/web-engineering
+
+# Claude Code — project-level
+git submodule add <repo-url> .claude/skills/web-engineering
+
+# Claude Code — user-level
+git clone <repo-url> ~/.claude/skills/web-engineering
+```
+
+The agent auto-discovers the root `SKILL.md` as the `web-engineering` skill collection and loads individual skills on demand.
+
+### Method 2: install.sh
+
+For more control (single skill, specific target, admin scope):
+
+```bash
+# Clone the harness repo first
+git clone <repo-url> ~/agentic-harness
+
+# Install all skills for Codex CLI into current project
+~/agentic-harness/install.sh --adapter codex
+
+# Install all skills for Claude Code into current project
+~/agentic-harness/install.sh --adapter claude-code
 
 # Install to user-level (available in all projects)
-./install.sh --adapter codex --scope user
+~/agentic-harness/install.sh --adapter codex --scope user
 
-# Install a single skill
-./install.sh --adapter codex --skill clean-code
+# Install a single skill only
+~/agentic-harness/install.sh --adapter codex --skill clean-code
+
+# Install to a specific project
+~/agentic-harness/install.sh --adapter codex --target ~/my-project
 ```
 
 ## Skill Format
@@ -27,8 +57,6 @@ Skills use the cross-platform `SKILL.md` format:
 ```
 skill-name/
   SKILL.md          # Instructions + metadata (required)
-  scripts/          # Optional executable scripts
-  references/       # Optional reference docs
 ```
 
 `SKILL.md` uses YAML frontmatter:
@@ -44,10 +72,6 @@ Both Claude Code and Codex CLI natively support this format. Skills are loaded l
 
 ## Available Skills
 
-### web-engineering
-
-Advanced engineering skills for Java 21/25 and Spring Boot 4 development.
-
 | Skill | Description |
 |-------|-------------|
 | `agent-designer` | Multi-agent architecture patterns |
@@ -58,35 +82,13 @@ Advanced engineering skills for Java 21/25 and Spring Boot 4 development.
 | `maven-dependency-audit` | Dependency security scanning |
 | `test-quality` | JUnit 5 + AssertJ testing |
 
-## Adapters
-
-### OpenAI Codex CLI
-
-Installs skills by copying to Codex's skill directories:
-
-| Scope | Location |
-|-------|----------|
-| repo | `TARGET/.agents/skills/` |
-| user | `~/.agents/skills/` |
-| admin | `/etc/codex/skills/` |
-
-### Claude Code
-
-Installs skills by copying to Claude Code's skill directories:
-
-| Scope | Location |
-|-------|----------|
-| repo | `TARGET/.claude/skills/` |
-| user | `~/.claude/skills/` |
-
-## Install Options
+## install.sh Options
 
 ```
 ./install.sh [OPTIONS]
 
   -a, --adapter <claude-code|codex>   Target platform (auto-detect if omitted)
   -s, --scope <repo|user|admin>       Install scope (default: repo)
-  -c, --collection <name>             Specific collection only
   -k, --skill <name>                  Specific skill only
   -t, --target <path>                 Target directory (default: .)
 ```
