@@ -1,74 +1,66 @@
 # Agentic Harness
 
-Platform-agnostic agent constraint framework. Provides reusable skills for AI coding agents.
-
-Supports: **Claude Code** and **OpenAI Codex CLI**.
+Platform-agnostic agent constraint framework with reusable skills for **Claude Code** and **OpenAI Codex**.
 
 ## Installation
 
-### Method 1: git clone (推荐)
-
-Clone directly into the agent's skills directory — no extra steps needed.
+### One-stop installer (recommended)
 
 ```bash
-# Codex CLI — project-level (as submodule)
-git submodule add <repo-url> .agents/skills/web-engineering
-
-# Codex CLI — user-level
-git clone <repo-url> ~/.agents/skills/web-engineering
-
-# Claude Code — project-level
-git submodule add <repo-url> .claude/skills/web-engineering
-
-# Claude Code — user-level
-git clone <repo-url> ~/.claude/skills/web-engineering
+git clone https://github.com/marlinl/agentic-harness
+cd agentic-harness
+./install.sh
 ```
 
-The agent auto-discovers the root `SKILL.md` as the `web-engineering` skill collection and loads individual skills on demand.
-
-### Method 2: install.sh
-
-For more control (single skill, specific target, admin scope):
+`install.sh` auto-detects which tools you have installed:
+- Scans `~/.claude` and `~/.codex`
+- Installs skills for whichever tool(s) exist
+- If the repo is already cloned at `~/.agentic-harness`, checks the remote commit:
+  - Same commit → skip
+  - Different commit → ask before overwriting
 
 ```bash
-# Clone the harness repo first
-git clone <repo-url> ~/agentic-harness
+# Project-level install
+./install.sh --target ~/my-project
 
-# Install all skills for Codex CLI into current project
-~/agentic-harness/install.sh --adapter codex
-
-# Install all skills for Claude Code into current project
-~/agentic-harness/install.sh --adapter claude-code
-
-# Install to user-level (available in all projects)
-~/agentic-harness/install.sh --adapter codex --scope user
-
-# Install a single skill only
-~/agentic-harness/install.sh --adapter codex --skill clean-code
-
-# Install to a specific project
-~/agentic-harness/install.sh --adapter codex --target ~/my-project
+# Uninstall (removes symlinks, keeps the cloned repo)
+./install.sh --uninstall
 ```
 
-## Skill Format
+### Plugin marketplace (alternative)
 
-Skills use the cross-platform `SKILL.md` format:
-
-```
-skill-name/
-  SKILL.md          # Instructions + metadata (required)
+**Codex:**
+```bash
+codex plugin marketplace add marlinl/agentic-harness
 ```
 
-`SKILL.md` uses YAML frontmatter:
-
-```yaml
----
-name: skill-name
-description: When and how to use this skill.
----
+**Claude Code:**
+```bash
+/plugin marketplace add marlinl/agentic-harness
+/plugin install web-engineering
 ```
 
-Both Claude Code and Codex CLI natively support this format. Skills are loaded lazily — only the full content of activated skills enters the agent's context.
+## Structure
+
+```
+agentic-harness/
+├── .codex-plugin/
+│   └── plugin.json           # Codex plugin manifest
+├── .claude-plugin/
+│   └── marketplace.json      # Claude Code plugin registry
+├── .agents/
+│   └── plugins/
+│       └── marketplace.json  # Codex-native marketplace
+├── skills/                   # Skills collection (shared by both agents)
+│   ├── SKILL.md              # Collection entry point
+│   ├── agent-designer/SKILL.md
+│   ├── clean-code/SKILL.md
+│   └── ...
+├── AGENTS.md                 # Project-level instructions (Codex)
+├── install.sh                # One-stop installer
+├── LICENSE
+└── README.md
+```
 
 ## Available Skills
 
@@ -81,17 +73,6 @@ Both Claude Code and Codex CLI natively support this format. Skills are loaded l
 | `logging-patterns` | SLF4J, structured logging, MDC |
 | `maven-dependency-audit` | Dependency security scanning |
 | `test-quality` | JUnit 5 + AssertJ testing |
-
-## install.sh Options
-
-```
-./install.sh [OPTIONS]
-
-  -a, --adapter <claude-code|codex>   Target platform (auto-detect if omitted)
-  -s, --scope <repo|user|admin>       Install scope (default: repo)
-  -k, --skill <name>                  Specific skill only
-  -t, --target <path>                 Target directory (default: .)
-```
 
 ## License
 

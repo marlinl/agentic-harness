@@ -1,0 +1,20 @@
+{
+  "name": "agentic-harness",
+  "interface": {
+    "displayName": "Agentic Harness"
+  },
+  "plugins": [
+    {
+      "name": "web-engineering",
+      "source": {
+        "source": "local",
+        "path": "./"
+      },
+      "policy": {
+        "installation": "AVAILABLE",
+        "authentication": "NONE"
+      },
+      "category": "Development"
+    }
+  ]
+}

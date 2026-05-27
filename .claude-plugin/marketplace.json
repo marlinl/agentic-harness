@@ -1,0 +1,34 @@
+{
+    "name": "agentic-harness",
+    "owner": {
+        "name": "MarlinL",
+        "url": "https://github.com/marlinl"
+    },
+    "description": "Platform-agnostic agent constraint framework with reusable skills for Java web engineering.",
+    "repository": "https://github.com/marlinl/agentic-harness",
+    "metadata": {
+        "version": "1.0.0",
+        "license": "BSD-2-Clause"
+    },
+    "plugins": [
+        {
+            "name": "web-engineering",
+            "source": "./skills",
+            "description": "Advanced engineering skills for Java 21/25, Spring Boot, JPA, testing, and clean code.",
+            "version": "1.0.0",
+            "author": {
+                "name": "MarlinL"
+            },
+            "keywords": [
+                "java",
+                "spring",
+                "maven",
+                "test-quality",
+                "clean-code",
+                "jpa",
+                "logging"
+            ],
+            "category": "development"
+        }
+    ]
+}
