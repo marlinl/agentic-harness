@@ -17,24 +17,25 @@ Write high-quality, maintainable tests for Java projects using modern best pract
 
 ### JUnit 5 (Jupiter)
 ```java
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.DisplayName;
+import static org.assertj.core.api.Assertions.assertThat;
+
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
-import static org.assertj.core.api.Assertions.*;
+import org.junit.jupiter.api.Test;
 ```
 
 ### AssertJ over standard assertions
 ✅ **Use AssertJ**:
 ```java
 assertThat(plugin.getState())
-    .as("Plugin should be started after initialization")
-    .isEqualTo(PluginState.STARTED);
+  .as("Plugin should be started after initialization")
+  .isEqualTo(PluginState.STARTED);
 
 assertThat(plugins)
-    .hasSize(3)
-    .extracting(Plugin::getId)
-    .containsExactly("plugin1", "plugin2", "plugin3");
+  .hasSize(3)
+  .extracting(Plugin::getId)
+  .containsExactly("plugin1", "plugin2", "plugin3");
 ```
 
 ❌ **Avoid JUnit assertions**:
@@ -51,18 +52,18 @@ Always use Arrange-Act-Assert pattern:
 @Test
 @DisplayName("Should load plugin from valid directory")
 void shouldLoadPluginFromValidDirectory() {
-    // Arrange - Setup test data and dependencies
-    Path pluginDir = Paths.get("test-plugins/valid-plugin");
-    PluginLoader loader = new DefaultPluginLoader();
-    
-    // Act - Execute the behavior being tested
-    Plugin plugin = loader.load(pluginDir);
-    
-    // Assert - Verify results
-    assertThat(plugin)
-        .isNotNull()
-        .extracting(Plugin::getId, Plugin::getVersion)
-        .containsExactly("test-plugin", "1.0.0");
+  // Arrange - Setup test data and dependencies
+  Path pluginDir = Paths.get("test-plugins/valid-plugin");
+  PluginLoader loader = new DefaultPluginLoader();
+  
+  // Act - Execute the behavior being tested
+  Plugin plugin = loader.load(pluginDir);
+  
+  // Assert - Verify results
+  assertThat(plugin)
+    .isNotNull()
+    .extracting(Plugin::getId, Plugin::getVersion)
+    .containsExactly("test-plugin", "1.0.0");
 }
 ```
 
@@ -107,93 +108,93 @@ void invalidPluginDescriptor() { }
 ```java
 // Basic collection checks
 assertThat(plugins)
-    .isNotEmpty()
-    .hasSize(2)
-    .doesNotContainNull();
+  .isNotEmpty()
+  .hasSize(2)
+  .doesNotContainNull();
 
 // Advanced filtering and extraction
 assertThat(plugins)
-    .filteredOn(p -> p.getState() == PluginState.STARTED)
-    .extracting(Plugin::getId)
-    .containsExactlyInAnyOrder("plugin-a", "plugin-b");
+  .filteredOn(p -> p.getState() == PluginState.STARTED)
+  .extracting(Plugin::getId)
+  .containsExactlyInAnyOrder("plugin-a", "plugin-b");
 
 // All elements match condition
 assertThat(plugins)
-    .allMatch(p -> p.getVersion() != null, "All plugins have version");
+  .allMatch(p -> p.getVersion() != null, "All plugins have version");
 ```
 
 ### Exception assertions
 ```java
 // Basic exception check
 assertThatThrownBy(() -> loader.load(invalidPath))
-    .isInstanceOf(PluginException.class)
-    .hasMessageContaining("Invalid plugin descriptor");
+  .isInstanceOf(PluginException.class)
+  .hasMessageContaining("Invalid plugin descriptor");
 
 // Detailed exception verification
 assertThatThrownBy(() -> manager.startPlugin("missing-plugin"))
-    .isInstanceOf(PluginException.class)
-    .hasMessageContaining("Plugin not found")
-    .hasCauseInstanceOf(IllegalArgumentException.class)
-    .hasNoCause(); // or verify cause chain
+  .isInstanceOf(PluginException.class)
+  .hasMessageContaining("Plugin not found")
+  .hasCauseInstanceOf(IllegalArgumentException.class)
+  .hasNoCause(); // or verify cause chain
 
 // With assertThatExceptionOfType (more readable)
 assertThatExceptionOfType(PluginException.class)
-    .isThrownBy(() -> loader.load(invalidPath))
-    .withMessageContaining("Invalid")
-    .withMessageMatching("Invalid .* descriptor");
+  .isThrownBy(() -> loader.load(invalidPath))
+  .withMessageContaining("Invalid")
+  .withMessageMatching("Invalid .* descriptor");
 ```
 
 ### Object assertions
 ```java
 // Extract and verify multiple properties
 assertThat(plugin)
-    .isNotNull()
-    .extracting("id", "version", "state")
-    .containsExactly("my-plugin", "1.0", PluginState.STARTED);
+  .isNotNull()
+  .extracting("id", "version", "state")
+  .containsExactly("my-plugin", "1.0", PluginState.STARTED);
 
 // Using method references (type-safe)
 assertThat(plugin)
-    .extracting(Plugin::getId, Plugin::getVersion, Plugin::getState)
-    .containsExactly("my-plugin", "1.0", PluginState.STARTED);
+  .extracting(Plugin::getId, Plugin::getVersion, Plugin::getState)
+  .containsExactly("my-plugin", "1.0", PluginState.STARTED);
 
 // Field by field comparison
 assertThat(actualPlugin)
-    .usingRecursiveComparison()
-    .isEqualTo(expectedPlugin);
+  .usingRecursiveComparison()
+  .isEqualTo(expectedPlugin);
 ```
 
 ### Soft assertions (multiple checks)
 ```java
 @Test
 void shouldHaveValidPluginDescriptor() {
-    SoftAssertions softly = new SoftAssertions();
-    
-    softly.assertThat(descriptor.getId())
-        .as("Plugin ID")
-        .isNotBlank()
-        .matches("[a-z0-9-]+");
-    
-    softly.assertThat(descriptor.getVersion())
-        .as("Plugin version")
-        .matches("\\d+\\.\\d+\\.\\d+");
-    
-    softly.assertThat(descriptor.getDependencies())
-        .as("Dependencies")
-        .isNotNull()
-        .doesNotContainNull();
-    
-    softly.assertAll(); // All assertions evaluated, even if some fail
+  SoftAssertions softly = new SoftAssertions();
+  
+  softly.assertThat(descriptor.getId())
+    .as("Plugin ID")
+    .isNotBlank()
+    .matches("[a-z0-9-]+");
+  
+  softly.assertThat(descriptor.getVersion())
+    .as("Plugin version")
+    .matches("\\d+\\.\\d+\\.\\d+");
+  
+  softly.assertThat(descriptor.getDependencies())
+    .as("Dependencies")
+    .isNotNull()
+    .doesNotContainNull();
+  
+  softly.assertAll(); // All assertions evaluated, even if some fail
 }
 ```
 
 ### String assertions
 ```java
 assertThat(errorMessage)
-    .startsWith("Error:")
-    .contains("plugin", "failed")
-    .doesNotContain("success")
-    .matches("Error: .* failed")
-    .hasLineCount(3);
+  .startsWith("Error:")
+  .contains("plugin", "failed")
+  .doesNotContain("success")
+  .matches("Error: .* failed")
+  .hasLineCount(3);
 ```
 
 ## Test Organization
@@ -202,47 +203,47 @@ assertThat(errorMessage)
 ```java
 @DisplayName("PluginManager")
 class PluginManagerTest {
+  
+  private PluginManager manager;
+  
+  @BeforeEach
+  void setUp() {
+    manager = new DefaultPluginManager();
+  }
+  
+  @Nested
+  @DisplayName("when starting plugins")
+  class WhenStartingPlugins {
     
-    private PluginManager manager;
-    
-    @BeforeEach
-    void setUp() {
-        manager = new DefaultPluginManager();
+    @Test
+    @DisplayName("should start all plugins in dependency order")
+    void shouldStartInDependencyOrder() {
+      // Test implementation
     }
     
-    @Nested
-    @DisplayName("when starting plugins")
-    class WhenStartingPlugins {
-        
-        @Test
-        @DisplayName("should start all plugins in dependency order")
-        void shouldStartInDependencyOrder() {
-            // Test implementation
-        }
-        
-        @Test
-        @DisplayName("should skip disabled plugins")
-        void shouldSkipDisabledPlugins() {
-            // Test implementation
-        }
-        
-        @Test
-        @DisplayName("should fail if circular dependency detected")
-        void shouldFailOnCircularDependency() {
-            // Test implementation
-        }
+    @Test
+    @DisplayName("should skip disabled plugins")
+    void shouldSkipDisabledPlugins() {
+      // Test implementation
     }
     
-    @Nested
-    @DisplayName("when stopping plugins")  
-    class WhenStoppingPlugins {
-        
-        @Test
-        @DisplayName("should stop plugins in reverse dependency order")
-        void shouldStopInReverseOrder() {
-            // Test implementation
-        }
+    @Test
+    @DisplayName("should fail if circular dependency detected")
+    void shouldFailOnCircularDependency() {
+      // Test implementation
     }
+  }
+  
+  @Nested
+  @DisplayName("when stopping plugins")  
+  class WhenStoppingPlugins {
+    
+    @Test
+    @DisplayName("should stop plugins in reverse dependency order")
+    void shouldStopInReverseOrder() {
+      // Test implementation
+    }
+  }
 }
 ```
 
@@ -252,38 +253,38 @@ class PluginManagerTest {
 @ValueSource(strings = {"1.0.0", "2.1.3", "10.0.0-SNAPSHOT"})
 @DisplayName("Should accept valid semantic versions")
 void shouldAcceptValidVersions(String version) {
-    assertThat(VersionParser.parse(version))
-        .isNotNull()
-        .hasFieldOrPropertyWithValue("valid", true);
+  assertThat(VersionParser.parse(version))
+    .isNotNull()
+    .hasFieldOrPropertyWithValue("valid", true);
 }
 
 @ParameterizedTest
 @CsvSource({
-    "plugin-a, 1.0, STARTED",
-    "plugin-b, 2.0, STOPPED",
-    "plugin-c, 1.5, DISABLED"
+  "plugin-a, 1.0, STARTED",
+  "plugin-b, 2.0, STOPPED",
+  "plugin-c, 1.5, DISABLED"
 })
 @DisplayName("Should load plugin with expected state")
 void shouldLoadPluginWithState(String id, String version, PluginState expectedState) {
-    Plugin plugin = createPlugin(id, version);
-    
-    assertThat(plugin.getState()).isEqualTo(expectedState);
+  Plugin plugin = createPlugin(id, version);
+  
+  assertThat(plugin.getState()).isEqualTo(expectedState);
 }
 
 @ParameterizedTest
 @MethodSource("invalidPluginDescriptors")
 @DisplayName("Should reject invalid plugin descriptors")
 void shouldRejectInvalidDescriptors(PluginDescriptor descriptor, String expectedError) {
-    assertThatThrownBy(() -> validator.validate(descriptor))
-        .hasMessageContaining(expectedError);
+  assertThatThrownBy(() -> validator.validate(descriptor))
+    .hasMessageContaining(expectedError);
 }
 
 static Stream<Arguments> invalidPluginDescriptors() {
-    return Stream.of(
-        Arguments.of(descriptorWithoutId(), "Missing plugin ID"),
-        Arguments.of(descriptorWithInvalidVersion(), "Invalid version format"),
-        Arguments.of(descriptorWithEmptyId(), "Plugin ID cannot be empty")
-    );
+  return Stream.of(
+    Arguments.of(descriptorWithoutId(), "Missing plugin ID"),
+    Arguments.of(descriptorWithInvalidVersion(), "Invalid version format"),
+    Arguments.of(descriptorWithEmptyId(), "Plugin ID cannot be empty")
+  );
 }
 ```
 
@@ -293,34 +294,34 @@ static Stream<Arguments> invalidPluginDescriptors() {
 ```java
 @ExtendWith(MockitoExtension.class)
 class PluginManagerTest {
+  
+  @Mock
+  private PluginRepository repository;
+  
+  @Mock
+  private PluginValidator validator;
+  
+  @InjectMocks
+  private DefaultPluginManager manager;
+  
+  @Test
+  @DisplayName("Should load plugins from repository")
+  void shouldLoadPluginsFromRepository() {
+    // Given
+    List<PluginDescriptor> descriptors = List.of(
+      createDescriptor("plugin1"),
+      createDescriptor("plugin2")
+    );
+    when(repository.findAll()).thenReturn(descriptors);
     
-    @Mock
-    private PluginRepository repository;
+    // When
+    List<Plugin> plugins = manager.loadAll();
     
-    @Mock
-    private PluginValidator validator;
-    
-    @InjectMocks
-    private DefaultPluginManager manager;
-    
-    @Test
-    @DisplayName("Should load plugins from repository")
-    void shouldLoadPluginsFromRepository() {
-        // Given
-        List<PluginDescriptor> descriptors = List.of(
-            createDescriptor("plugin1"),
-            createDescriptor("plugin2")
-        );
-        when(repository.findAll()).thenReturn(descriptors);
-        
-        // When
-        List<Plugin> plugins = manager.loadAll();
-        
-        // Then
-        assertThat(plugins).hasSize(2);
-        verify(repository).findAll();
-        verify(validator, times(2)).validate(any(PluginDescriptor.class));
-    }
+    // Then
+    assertThat(plugins).hasSize(2);
+    verify(repository).findAll();
+    verify(validator, times(2)).validate(any(PluginDescriptor.class));
+  }
 }
 ```
 
@@ -328,27 +329,27 @@ class PluginManagerTest {
 ```java
 @BeforeEach
 void setUp() throws IOException {
-    // Create temporary directory for test plugins
-    pluginDir = Files.createTempDirectory("test-plugins");
-    
-    // Initialize plugin manager with test config
-    PluginConfig config = PluginConfig.builder()
-        .pluginDirectory(pluginDir)
-        .enableValidation(true)
-        .build();
-    
-    pluginManager = new DefaultPluginManager(config);
+  // Create temporary directory for test plugins
+  pluginDir = Files.createTempDirectory("test-plugins");
+  
+  // Initialize plugin manager with test config
+  PluginConfig config = PluginConfig.builder()
+    .pluginDirectory(pluginDir)
+    .enableValidation(true)
+    .build();
+  
+  pluginManager = new DefaultPluginManager(config);
 }
 
 @AfterEach
 void tearDown() throws IOException {
-    // Clean up test resources
-    if (pluginManager != null) {
-        pluginManager.stopAll();
-    }
-    if (pluginDir != null) {
-        FileUtils.deleteDirectory(pluginDir.toFile());
-    }
+  // Clean up test resources
+  if (pluginManager != null) {
+    pluginManager.stopAll();
+  }
+  if (pluginDir != null) {
+    FileUtils.deleteDirectory(pluginDir.toFile());
+  }
 }
 ```
 
@@ -357,14 +358,14 @@ void tearDown() throws IOException {
 @Test
 @DisplayName("Should complete async plugin loading")
 void shouldCompleteAsyncLoading() {
-    CompletableFuture<Plugin> future = manager.loadAsync(pluginPath);
-    
-    assertThat(future)
-        .succeedsWithin(Duration.ofSeconds(5))
-        .satisfies(plugin -> {
-            assertThat(plugin.getState()).isEqualTo(PluginState.STARTED);
-            assertThat(plugin.getId()).isNotBlank();
-        });
+  CompletableFuture<Plugin> future = manager.loadAsync(pluginPath);
+  
+  assertThat(future)
+    .succeedsWithin(Duration.ofSeconds(5))
+    .satisfies(plugin -> {
+      assertThat(plugin.getState()).isEqualTo(PluginState.STARTED);
+      assertThat(plugin.getId()).isNotBlank();
+    });
 }
 ```
 
@@ -390,10 +391,10 @@ When writing tests:
 ```java
 // Extract common setup to helper methods
 private Plugin createTestPlugin(String id, String version) {
-    return Plugin.builder()
-        .id(id)
-        .version(version)
-        .build();
+  return Plugin.builder()
+    .id(id)
+    .version(version)
+    .build();
 }
 ```
 
@@ -420,9 +421,9 @@ public void setId(String id) { this.id = id; }
 
 // Simple POJOs with no logic
 public class PluginInfo {
-    private String id;
-    private String version;
-    // ... only getters/setters
+  private String id;
+  private String version;
+  // ... only getters/setters
 }
 ```
 
@@ -442,21 +443,21 @@ assertThat(message).isEqualTo("Error at 2024-01-26 10:30:15");
 
 // 4. Multiple unrelated assertions
 @Test void testEverything() {
-    // 50 unrelated assertions
-    assertThat(plugin.getId()).isNotNull();
-    assertThat(manager.getCount()).isEqualTo(5);
-    assertThat(config.isEnabled()).isTrue();
-    // ... mixing multiple concerns
+  // 50 unrelated assertions
+  assertThat(plugin.getId()).isNotNull();
+  assertThat(manager.getCount()).isEqualTo(5);
+  assertThat(config.isEnabled()).isTrue();
+  // ... mixing multiple concerns
 }
 
 // 5. Ignoring exceptions
 @Test void shouldFail() {
-    try {
-        loader.load(invalidPath);
-        fail("Should have thrown exception");
-    } catch (Exception e) {
-        // Swallowing exception details
-    }
+  try {
+    loader.load(invalidPath);
+    fail("Should have thrown exception");
+  } catch (Exception e) {
+    // Swallowing exception details
+  }
 }
 ```
 
@@ -465,14 +466,14 @@ assertThat(message).isEqualTo("Error at 2024-01-26 10:30:15");
 @Test
 @DisplayName("Should reject plugin with missing dependencies")
 void shouldRejectPluginWithMissingDependencies() {
-    PluginDescriptor descriptor = PluginDescriptor.builder()
-        .id("test-plugin")
-        .dependencies(List.of("missing-dep"))
-        .build();
-    
-    assertThatThrownBy(() -> manager.load(descriptor))
-        .isInstanceOf(PluginException.class)
-        .hasMessageContaining("Missing dependencies: missing-dep");
+  PluginDescriptor descriptor = PluginDescriptor.builder()
+    .id("test-plugin")
+    .dependencies(List.of("missing-dep"))
+    .build();
+  
+  assertThatThrownBy(() -> manager.load(descriptor))
+    .isInstanceOf(PluginException.class)
+    .hasMessageContaining("Missing dependencies: missing-dep");
 }
 ```
 
@@ -539,21 +540,21 @@ assertThat(str).matches("regex\\d+");
 
 // ===== Exceptions =====
 assertThatThrownBy(() -> code())
-    .isInstanceOf(PluginException.class)
-    .hasMessageContaining("error");
+  .isInstanceOf(PluginException.class)
+  .hasMessageContaining("error");
 
 assertThatNoException().isThrownBy(() -> code());
 
 // ===== Custom Descriptions =====
 assertThat(userId)
-    .as("User ID should be positive")
-    .isPositive();
+  .as("User ID should be positive")
+  .isPositive();
 
 // ===== Object Comparison =====
 assertThat(actual)
-    .usingRecursiveComparison()
-    .ignoringFields("timestamp", "id")
-    .isEqualTo(expected);
+  .usingRecursiveComparison()
+  .ignoringFields("timestamp", "id")
+  .isEqualTo(expected);
 ```
 
 ## Best Practices Summary

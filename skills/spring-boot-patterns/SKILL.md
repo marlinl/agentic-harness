@@ -54,45 +54,45 @@ src/main/java/com/example/myapp/
 @RequestMapping("/user")
 public class UserController {
 
-    private final UserService userService;
+  private final UserService userService;
 
-    public UserController(UserService userService) {
-        this.userService = userService;
-    }
+  public UserController(UserService userService) {
+    this.userService = userService;
+  }
 
-    @GetMapping
-    public ResponseEntity<List<UserResponse>> getAll() {
-        return ResponseEntity.ok(userService.findAll());
-    }
+  @GetMapping
+  public ResponseEntity<List<UserResponse>> getAll() {
+    return ResponseEntity.ok(userService.findAll());
+  }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<UserResponse> getById(@PathVariable Long id) {
-        return ResponseEntity.ok(userService.findById(id));
-    }
+  @GetMapping("/{id}")
+  public ResponseEntity<UserResponse> getById(@PathVariable Long id) {
+    return ResponseEntity.ok(userService.findById(id));
+  }
 
-    @PostMapping
-    public ResponseEntity<UserResponse> create(
-            @Valid @RequestBody CreateUserRequest request) {
-        UserResponse created = userService.create(request);
-        URI location = ServletUriComponentsBuilder.fromCurrentRequest()
-            .path("/{id}")
-            .buildAndExpand(created.getId())
-            .toUri();
-        return ResponseEntity.created(location).body(created);
-    }
+  @PostMapping
+  public ResponseEntity<UserResponse> create(
+      @Valid @RequestBody CreateUserRequest request) {
+    UserResponse created = userService.create(request);
+    URI location = ServletUriComponentsBuilder.fromCurrentRequest()
+        .path("/{id}")
+        .buildAndExpand(created.getId())
+        .toUri();
+    return ResponseEntity.created(location).body(created);
+  }
 
-    @PutMapping("/{id}")
-    public ResponseEntity<UserResponse> update(
-            @PathVariable Long id,
-            @Valid @RequestBody UpdateUserRequest request) {
-        return ResponseEntity.ok(userService.update(id, request));
-    }
+  @PutMapping("/{id}")
+  public ResponseEntity<UserResponse> update(
+      @PathVariable Long id,
+      @Valid @RequestBody UpdateUserRequest request) {
+    return ResponseEntity.ok(userService.update(id, request));
+  }
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> delete(@PathVariable Long id) {
-        userService.delete(id);
-        return ResponseEntity.noContent().build();
-    }
+  @DeleteMapping("/{id}")
+  public ResponseEntity<Void> delete(@PathVariable Long id) {
+    userService.delete(id);
+    return ResponseEntity.noContent().build();
+  }
 }
 ```
 
@@ -111,14 +111,14 @@ public class UserController {
 // ❌ Business logic in controller
 @PostMapping
 public User create(@RequestBody User user) {
-    user.setCreatedAt(LocalDateTime.now());  // Logic belongs in service
-    return userRepository.save(user);         // Direct repo access
+  user.setCreatedAt(LocalDateTime.now());  // Logic belongs in service
+  return userRepository.save(user);         // Direct repo access
 }
 
 // ❌ Returning entity directly (exposes internals)
 @GetMapping("/{id}")
 public User getById(@PathVariable Long id) {
-    return userRepository.findById(id).get();
+  return userRepository.findById(id).get();
 }
 ```
 
@@ -130,57 +130,57 @@ public User getById(@PathVariable Long id) {
 ```java
 // Interface
 public interface UserService {
-    List<UserResponse> findAll();
-    UserResponse findById(Long id);
-    UserResponse create(CreateUserRequest request);
-    UserResponse update(Long id, UpdateUserRequest request);
-    void delete(Long id);
+  List<UserResponse> findAll();
+  UserResponse findById(Long id);
+  UserResponse create(CreateUserRequest request);
+  UserResponse update(Long id, UpdateUserRequest request);
+  void delete(Long id);
 }
 
 // Implementation
 @Service
 public class UserServiceImpl implements UserService {
 
-    private final UserRepository userRepository;
-    private final UserMapper userMapper;
-    private final JwtProperties jwtProperties;
+  private final UserRepository userRepository;
+  private final UserMapper userMapper;
+  private final JwtProperties jwtProperties;
 
-    public UserServiceImpl(UserRepository userRepository, UserMapper userMapper, JwtProperties jwtProperties) {
-        this.userRepository = userRepository;
-        this.userMapper = userMapper;
-        this.jwtProperties = jwtProperties;
-    }
+  public UserServiceImpl(UserRepository userRepository, UserMapper userMapper, JwtProperties jwtProperties) {
+    this.userRepository = userRepository;
+    this.userMapper = userMapper;
+    this.jwtProperties = jwtProperties;
+  }
 
-    @Override
-    public List<UserResponse> findAll() {
-        return userRepository.findAll().stream()
-            .map(userMapper::toResponse)
-            .toList();
-    }
+  @Override
+  public List<UserResponse> findAll() {
+    return userRepository.findAll().stream()
+        .map(userMapper::toResponse)
+        .toList();
+  }
 
-    @Override
-    public UserResponse findById(Long id) {
-        return userRepository.findById(id)
-            .map(userMapper::toResponse)
-            .orElseThrow(() -> new ResourceNotFoundException("User", id));
-    }
+  @Override
+  public UserResponse findById(Long id) {
+    return userRepository.findById(id)
+        .map(userMapper::toResponse)
+        .orElseThrow(() -> new ResourceNotFoundException("User", id));
+  }
 
-    @Override
-    @Transactional  // Write transaction
-    public UserResponse create(CreateUserRequest request) {
-        User user = userMapper.toEntity(request);
-        User saved = userRepository.save(user);
-        return userMapper.toResponse(saved);
-    }
+  @Override
+  @Transactional  // Write transaction
+  public UserResponse create(CreateUserRequest request) {
+    User user = userMapper.toEntity(request);
+    User saved = userRepository.save(user);
+    return userMapper.toResponse(saved);
+  }
 
-    @Override
-    @Transactional
-    public void delete(Long id) {
-        if (!userRepository.existsById(id)) {
-            throw new ResourceNotFoundException("User", id);
-        }
-        userRepository.deleteById(id);
+  @Override
+  @Transactional
+  public void delete(Long id) {
+    if (!userRepository.existsById(id)) {
+      throw new ResourceNotFoundException("User", id);
     }
+    userRepository.deleteById(id);
+  }
 }
 ```
 
@@ -199,25 +199,25 @@ public class UserServiceImpl implements UserService {
 ```java
 public interface UserRepository extends JpaRepository<User, Long> {
 
-    // Derived query
-    Optional<User> findByEmail(String email);
+  // Derived query
+  Optional<User> findByEmail(String email);
 
-    List<User> findByActiveTrue();
+  List<User> findByActiveTrue();
 
-    // Custom query
-    @Query("SELECT u FROM User u WHERE u.department.id = :deptId")
-    List<User> findByDepartmentId(@Param("deptId") Long departmentId);
+  // Custom query
+  @Query("SELECT u FROM User u WHERE u.department.id = :deptId")
+  List<User> findByDepartmentId(@Param("deptId") Long departmentId);
 
-    // Native query (use sparingly)
-    @Query(value = "SELECT * FROM users WHERE created_at > :date",
-           nativeQuery = true)
-    List<User> findRecentUsers(@Param("date") LocalDate date);
+  // Native query (use sparingly)
+  @Query(value = "SELECT * FROM users WHERE created_at > :date",
+    nativeQuery = true)
+  List<User> findRecentUsers(@Param("date") LocalDate date);
 
-    // Exists check (more efficient than findBy)
-    boolean existsByEmail(String email);
+  // Exists check (more efficient than findBy)
+  boolean existsByEmail(String email);
 
-    // Count
-    long countByActiveTrue();
+  // Count
+  long countByActiveTrue();
 }
 ```
 
@@ -236,11 +236,11 @@ public interface UserRepository extends JpaRepository<User, Long> {
 ### DTO Design
 ```java
 public record LoginUserDTO(
-    String name,
+  String name,
 
-    String email,
+  String email,
 
-    Integer age
+  Integer age
 ) {}
 ```
 
@@ -257,25 +257,25 @@ public record LoginUserDTO(
 ```java
 // Request DTO with validation
 public record CreateUserRequest(
-    @NotBlank(message = "Name is required")
-    @Size(min = 2, max = 100)
-    String name,
+  @NotBlank(message = "Name is required")
+  @Size(min = 2, max = 100)
+  String name,
 
-    @NotBlank
-    @Email(message = "Invalid email format")
-    String email,
+  @NotBlank
+  @Email(message = "Invalid email format")
+  String email,
 
-    @NotNull
-    @Min(18)
-    Integer age
+  @NotNull
+  @Min(18)
+  Integer age
 ) {}
 
 // Response DTO
 public record UserResponse(
-    Long id,
-    String name,
-    String email,
-    LocalDateTime createdAt
+  Long id,
+  String name,
+  String email,
+  LocalDateTime createdAt
 ) {}
 ```
 
@@ -284,13 +284,13 @@ public record UserResponse(
 @Mapper(componentModel = "spring")
 public interface UserMapper {
 
-    UserResponse toResponse(User entity);
+  UserResponse toResponse(User entity);
 
-    List<UserResponse> toResponseList(List<User> entities);
+  List<UserResponse> toResponseList(List<User> entities);
 
-    @Mapping(target = "id", ignore = true)
-    @Mapping(target = "createdAt", ignore = true)
-    User toEntity(CreateUserRequest request);
+  @Mapping(target = "id", ignore = true)
+  @Mapping(target = "createdAt", ignore = true)
+  User toEntity(CreateUserRequest request);
 }
 ```
 
@@ -302,19 +302,19 @@ public interface UserMapper {
 ```java
 public class ResourceNotFoundException extends RuntimeException {
 
-    public ResourceNotFoundException(String resource, Long id) {
-        super(String.format("%s not found with id: %d", resource, id));
-    }
+  public ResourceNotFoundException(String resource, Long id) {
+    super(String.format("%s not found with id: %d", resource, id));
+  }
 }
 
 public class BusinessException extends RuntimeException {
 
-    private final String code;
+  private final String code;
 
-    public BusinessException(String code, String message) {
-        super(message);
-        this.code = code;
-    }
+  public BusinessException(String code, String message) {
+    super(message);
+    this.code = code;
+  }
 }
 ```
 
@@ -324,29 +324,29 @@ public class BusinessException extends RuntimeException {
 @Slf4j
 public class GlobalExceptionHandler {
 
-    @ExceptionHandler(ResourceNotFoundException.class)
-    public ResponseEntity<ErrorResponse> handleNotFound(ResourceNotFoundException ex) {
-        log.warn("Resource not found: {}", ex.getMessage());
-        return ResponseEntity.status(HttpStatus.NOT_FOUND)
-            .body(new ErrorResponse("NOT_FOUND", ex.getMessage()));
-    }
+  @ExceptionHandler(ResourceNotFoundException.class)
+  public ResponseEntity<ErrorResponse> handleNotFound(ResourceNotFoundException ex) {
+    log.warn("Resource not found: {}", ex.getMessage());
+    return ResponseEntity.status(HttpStatus.NOT_FOUND)
+        .body(new ErrorResponse("NOT_FOUND", ex.getMessage()));
+  }
 
-    @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<ErrorResponse> handleValidation(
-            MethodArgumentNotValidException ex) {
-        List<String> errors = ex.getBindingResult().getFieldErrors().stream()
-            .map(e -> e.getField() + ": " + e.getDefaultMessage())
-            .toList();
-        return ResponseEntity.badRequest()
-            .body(new ErrorResponse("VALIDATION_ERROR", errors.toString()));
-    }
+  @ExceptionHandler(MethodArgumentNotValidException.class)
+  public ResponseEntity<ErrorResponse> handleValidation(
+      MethodArgumentNotValidException ex) {
+    List<String> errors = ex.getBindingResult().getFieldErrors().stream()
+        .map(e -> e.getField() + ": " + e.getDefaultMessage())
+        .toList();
+    return ResponseEntity.badRequest()
+        .body(new ErrorResponse("VALIDATION_ERROR", errors.toString()));
+  }
 
-    @ExceptionHandler(Exception.class)
-    public ResponseEntity<ErrorResponse> handleGeneric(Exception ex) {
-        log.error("Unexpected error", ex);
-        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-            .body(new ErrorResponse("INTERNAL_ERROR", "An unexpected error occurred"));
-    }
+  @ExceptionHandler(Exception.class)
+  public ResponseEntity<ErrorResponse> handleGeneric(Exception ex) {
+    log.error("Unexpected error", ex);
+    return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+        .body(new ErrorResponse("INTERNAL_ERROR", "An unexpected error occurred"));
+  }
 }
 
 public record ErrorResponse(String code, String message) {}
@@ -382,13 +382,13 @@ app:
 @Validated
 public class JwtProperties {
 
-    @NotBlank
-    private String secret;
+  @NotBlank
+  private String secret;
 
-    @Min(60000)
-    private long expiration;
+  @Min(60000)
+  private long expiration;
 
-    // getters and setters
+  // getters and setters
 }
 ```
 
@@ -426,21 +426,21 @@ src/main/resources/
 @WebMvcTest(UserController.class)
 class UserControllerTest {
 
-    @Autowired
-    private MockMvc mockMvc;
+  @Autowired
+  private MockMvc mockMvc;
 
-    @MockBean
-    private UserService userService;
+  @MockBean
+  private UserService userService;
 
-    @Test
-    void shouldReturnUser() throws Exception {
-        when(userService.findById(1L))
-            .thenReturn(new UserResponse(1L, "John", "john@example.com", null));
+  @Test
+  void shouldReturnUser() throws Exception {
+    when(userService.findById(1L))
+        .thenReturn(new UserResponse(1L, "John", "john@example.com", null));
 
-        mockMvc.perform(get("/users/1"))
-            .andExpect(status().isOk())
-            .andExpect(jsonPath("$.name").value("John"));
-    }
+    mockMvc.perform(get("/users/1"))
+        .andExpect(status().isOk())
+        .andExpect(jsonPath("$.name").value("John"));
+  }
 }
 ```
 
@@ -449,22 +449,22 @@ class UserControllerTest {
 @ExtendWith(MockitoExtension.class)
 class UserServiceImplTest {
 
-    @Mock
-    private UserRepository userRepository;
+  @Mock
+  private UserRepository userRepository;
 
-    @Mock
-    private UserMapper userMapper;
+  @Mock
+  private UserMapper userMapper;
 
-    @InjectMocks
-    private UserServiceImpl userService;
+  @InjectMocks
+  private UserServiceImpl userService;
 
-    @Test
-    void shouldThrowWhenUserNotFound() {
-        when(userRepository.findById(1L)).thenReturn(Optional.empty());
+  @Test
+  void shouldThrowWhenUserNotFound() {
+    when(userRepository.findById(1L)).thenReturn(Optional.empty());
 
-        assertThatThrownBy(() -> userService.findById(1L))
-            .isInstanceOf(ResourceNotFoundException.class);
-    }
+    assertThatThrownBy(() -> userService.findById(1L))
+        .isInstanceOf(ResourceNotFoundException.class);
+  }
 }
 ```
 
@@ -473,21 +473,21 @@ class UserServiceImplTest {
 @SpringBootTest
 class UserIntegrationTest {
 
-    @Container
-    static PostgreSQLContainer<?> postgres = new PostgreSQLContainer<>("postgres:15");
+  @Container
+  static PostgreSQLContainer<?> postgres = new PostgreSQLContainer<>("postgres:15");
 
-    @Autowired
-    private MockMvc mockMvc;
+  @Autowired
+  private MockMvc mockMvc;
 
-    @Test
-    void shouldCreateUser() throws Exception {
-        mockMvc.perform(post("/users")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content("""
-                    {"name": "John", "email": "john@example.com", "age": 25}
-                    """))
-            .andExpect(status().isCreated());
-    }
+  @Test
+  void shouldCreateUser() throws Exception {
+    mockMvc.perform(post("/users")
+        .contentType(MediaType.APPLICATION_JSON)
+        .content("""
+            {"name": "John", "email": "john@example.com", "age": 25}
+            """))
+        .andExpect(status().isCreated());
+  }
 }
 ```
 

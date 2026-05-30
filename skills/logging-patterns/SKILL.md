@@ -209,10 +209,10 @@ import static net.logstash.logback.argument.StructuredArguments.kv;
 
 // Fields appear as separate JSON keys
 log.info("Order created",
-    kv("orderId", order.getId()),
-    kv("userId", user.getId()),
-    kv("total", order.getTotal()),
-    kv("step", "order_created")
+  kv("orderId", order.getId()),
+  kv("userId", user.getId()),
+  kv("total", order.getTotal()),
+  kv("step", "order_created")
 );
 
 // Output:
@@ -231,14 +231,14 @@ import org.slf4j.LoggerFactory;
 
 @Service
 public class OrderService {
-    private static final Logger log = LoggerFactory.getLogger(OrderService.class);
+  private static final Logger log = LoggerFactory.getLogger(OrderService.class);
 }
 
 // Or with Lombok
 @Slf4j
 @Service
 public class OrderService {
-    // use `log` directly
+  // use `log` directly
 }
 ```
 
@@ -253,7 +253,7 @@ log.debug("Processing order " + orderId + " for user " + userId);
 
 // ✅ For expensive operations
 if (log.isDebugEnabled()) {
-    log.debug("Full order details: {}", order.toJson());
+  log.debug("Full order details: {}", order.toJson());
 }
 ```
 
@@ -289,23 +289,24 @@ MDC adds context to every log entry in a request - essential for tracing.
 @Order(Ordered.HIGHEST_PRECEDENCE)
 public class RequestContextFilter extends OncePerRequestFilter {
 
-    @Override
-    protected void doFilterInternal(HttpServletRequest request,
-                                    HttpServletResponse response,
-                                    FilterChain chain) throws ServletException, IOException {
-        try {
-            String requestId = Optional.ofNullable(request.getHeader("X-Request-ID"))
-                .filter(s -> !s.isBlank())
-                .orElse(UUID.randomUUID().toString().substring(0, 8));
+  @Override
+  protected void doFilterInternal(
+    HttpServletRequest request,
+    HttpServletResponse response,
+    FilterChain chain) throws ServletException, IOException {
+    try {
+      String requestId = Optional.ofNullable(request.getHeader("X-Request-ID"))
+        .filter(s -> !s.isBlank())
+        .orElse(UUID.randomUUID().toString().substring(0, 8));
 
-            MDC.put("requestId", requestId);
-            response.setHeader("X-Request-ID", requestId);
+      MDC.put("requestId", requestId);
+      response.setHeader("X-Request-ID", requestId);
 
-            chain.doFilter(request, response);
-        } finally {
-            MDC.clear();
-        }
+      chain.doFilter(request, response);
+    } finally {
+      MDC.clear();
     }
+  }
 }
 ```
 
@@ -328,12 +329,14 @@ log.info("User action performed");  // {"userId":"john123","message":"User actio
 Map<String, String> context = MDC.getCopyOfContextMap();
 
 CompletableFuture.runAsync(() -> {
-    try {
-        if (context != null) MDC.setContextMap(context);
-        log.info("Async task running");  // Has requestId, userId
-    } finally {
-        MDC.clear();
+  try {
+    if (context != null) {
+      MDC.setContextMap(context);
     }
+    log.info("Async task running");  // Has requestId, userId
+  } finally {
+    MDC.clear();
+  }
 });
 ```
 
@@ -346,17 +349,17 @@ CompletableFuture.runAsync(() -> {
 ```java
 // Include key identifiers and state
 log.info("Order created",
-    kv("orderId", id),
-    kv("userId", userId),
-    kv("total", total),
-    kv("itemCount", items.size()),
-    kv("step", "order_created"));
+  kv("orderId", id),
+  kv("userId", userId),
+  kv("total", total),
+  kv("itemCount", items.size()),
+  kv("step", "order_created"));
 
 log.info("Payment processed",
-    kv("orderId", id),
-    kv("amount", amount),
-    kv("method", "card"),
-    kv("step", "payment_completed"));
+  kv("orderId", id),
+  kv("amount", amount),
+  kv("method", "card"),
+  kv("step", "payment_completed"));
 ```
 
 ### External Calls (with timing)
@@ -364,19 +367,19 @@ log.info("Payment processed",
 ```java
 long start = System.currentTimeMillis();
 try {
-    Result result = externalService.call(params);
-    log.info("External call succeeded",
-        kv("service", "PaymentGateway"),
-        kv("operation", "charge"),
-        kv("duration_ms", System.currentTimeMillis() - start));
-    return result;
+  Result result = externalService.call(params);
+  log.info("External call succeeded",
+    kv("service", "PaymentGateway"),
+    kv("operation", "charge"),
+    kv("duration_ms", System.currentTimeMillis() - start));
+  return result;
 } catch (Exception e) {
-    log.error("External call failed",
-        kv("service", "PaymentGateway"),
-        kv("operation", "charge"),
-        kv("duration_ms", System.currentTimeMillis() - start),
-        e);
-    throw e;
+  log.error("External call failed",
+    kv("service", "PaymentGateway"),
+    kv("operation", "charge"),
+    kv("duration_ms", System.currentTimeMillis() - start),
+    e);
+  throw e;
 }
 ```
 
@@ -384,19 +387,19 @@ try {
 
 ```java
 public Order processOrder(CreateOrderRequest request) {
-    log.info("Processing started", kv("step", "start"), kv("requestData", request.summary()));
+  log.info("Processing started", kv("step", "start"), kv("requestData", request.summary()));
 
-    Order order = createOrder(request);
-    log.info("Order created", kv("step", "order_created"), kv("orderId", order.getId()));
+  Order order = createOrder(request);
+  log.info("Order created", kv("step", "order_created"), kv("orderId", order.getId()));
 
-    validateInventory(order);
-    log.info("Inventory validated", kv("step", "inventory_ok"), kv("orderId", order.getId()));
+  validateInventory(order);
+  log.info("Inventory validated", kv("step", "inventory_ok"), kv("orderId", order.getId()));
 
-    processPayment(order);
-    log.info("Payment processed", kv("step", "payment_done"), kv("orderId", order.getId()));
+  processPayment(order);
+  log.info("Payment processed", kv("step", "payment_done"), kv("orderId", order.getId()));
 
-    log.info("Processing completed", kv("step", "complete"), kv("orderId", order.getId()));
-    return order;
+  log.info("Processing completed", kv("step", "complete"), kv("orderId", order.getId()));
+  return order;
 }
 ```
 
@@ -426,27 +429,27 @@ log.info("Token validated", kv("subject", sub), kv("exp", expiry));
 ```java
 // ❌ BAD: Logs same exception multiple times
 void methodA() {
-    try { methodB(); }
-    catch (Exception e) { log.error("Error", e); throw e; }  // Log #1
+  try { methodB(); }
+  catch (Exception e) { log.error("Error", e); throw e; }  // Log #1
 }
 void methodB() {
-    try { methodC(); }
-    catch (Exception e) { log.error("Error", e); throw e; }  // Log #2
+  try { methodC(); }
+  catch (Exception e) { log.error("Error", e); throw e; }  // Log #2
 }
 
 // ✅ GOOD: Log at service boundary only
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
-    @ExceptionHandler(Exception.class)
-    public ResponseEntity<?> handle(Exception e, HttpServletRequest request) {
-        log.error("Request failed",
-            kv("path", request.getRequestURI()),
-            kv("method", request.getMethod()),
-            kv("errorType", e.getClass().getSimpleName()),
-            e);  // Full stack trace
-        return ResponseEntity.status(500).body(errorResponse);
-    }
+  @ExceptionHandler(Exception.class)
+  public ResponseEntity<?> handle(Exception e, HttpServletRequest request) {
+    log.error("Request failed",
+      kv("path", request.getRequestURI()),
+      kv("method", request.getMethod()),
+      kv("errorType", e.getClass().getSimpleName()),
+      e);  // Full stack trace
+    return ResponseEntity.status(500).body(errorResponse);
+  }
 }
 ```
 
@@ -458,11 +461,11 @@ log.error("Error occurred", e);
 
 // ✅ Useful for debugging
 log.error("Order processing failed",
-    kv("orderId", orderId),
-    kv("step", "payment"),
-    kv("userId", userId),
-    kv("attemptNumber", attempt),
-    e);
+  kv("orderId", orderId),
+  kv("step", "payment"),
+  kv("userId", userId),
+  kv("attemptNumber", attempt),
+  e);
 ```
 
 ---

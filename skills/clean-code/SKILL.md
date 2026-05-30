@@ -36,25 +36,25 @@ Write readable, maintainable code following Clean Code principles.
 // ❌ BAD: Core business logic (e.g., discount calculation) repeated in multiple places
 public class OrderService {
 
-    public void processStandardOrder(Order order) {
-        BigDecimal discount = BigDecimal.ZERO;
-        // VIP gets 15% off
-        if (order.getUser().getMemberLevel() == MemberLevel.VIP) {
-            discount = order.getTotalPrice().multiply(new BigDecimal("0.15"));
-        }
-        BigDecimal finalAmount = order.getTotalPrice().subtract(discount);
-        // ... process payment
+  public void processStandardOrder(Order order) {
+    BigDecimal discount = BigDecimal.ZERO;
+    // VIP gets 15% off
+    if (order.getUser().getMemberLevel() == MemberLevel.VIP) {
+      discount = order.getTotalPrice().multiply(new BigDecimal("0.15"));
     }
+    BigDecimal finalAmount = order.getTotalPrice().subtract(discount);
+    // ... process payment
+  }
 
-    public void processSubscription(Subscription sub) {
-        BigDecimal discount = BigDecimal.ZERO;
-        // The exact same VIP logic repeated here
-        if (sub.getUser().getMemberLevel() == MemberLevel.VIP) {
-            discount = sub.getMonthlyFee().multiply(new BigDecimal("0.15"));
-        }
-        BigDecimal finalAmount = sub.getMonthlyFee().subtract(discount);
-        // ... process subscription
+  public void processSubscription(Subscription sub) {
+    BigDecimal discount = BigDecimal.ZERO;
+    // The exact same VIP logic repeated here
+    if (sub.getUser().getMemberLevel() == MemberLevel.VIP) {
+      discount = sub.getMonthlyFee().multiply(new BigDecimal("0.15"));
     }
+    BigDecimal finalAmount = sub.getMonthlyFee().subtract(discount);
+    // ... process subscription
+  }
 }
 ```
 
@@ -63,32 +63,32 @@ public class OrderService {
 ```java
 // ✅ GOOD: Single source of truth for business rules
 public class PricingStrategy {
-    private static final BigDecimal VIP_DISCOUNT_RATE = new BigDecimal("0.15");
+  private static final BigDecimal VIP_DISCOUNT_RATE = new BigDecimal("0.15");
 
-    public BigDecimal calculateFinalPrice(User user, BigDecimal originalAmount) {
-        if (user.getMemberLevel() == MemberLevel.VIP) {
-            return originalAmount.subtract(originalAmount.multiply(VIP_DISCOUNT_RATE));
-        }
-        return originalAmount;
+  public BigDecimal calculateFinalPrice(User user, BigDecimal originalAmount) {
+    if (user.getMemberLevel() == MemberLevel.VIP) {
+      return originalAmount.subtract(originalAmount.multiply(VIP_DISCOUNT_RATE));
     }
+    return originalAmount;
+  }
 }
 
 public class OrderService {
-    private final PricingStrategy pricingStrategy;
+  private final PricingStrategy pricingStrategy;
 
-    public void processStandardOrder(Order order) {
-        BigDecimal finalAmount = pricingStrategy.calculateFinalPrice(
-            order.getUser(), order.getTotalPrice()
-        );
-        // ... process payment
-    }
+  public void processStandardOrder(Order order) {
+    BigDecimal finalAmount = pricingStrategy.calculateFinalPrice(
+      order.getUser(), order.getTotalPrice()
+    );
+    // ... process payment
+  }
 
-    public void processSubscription(Subscription sub) {
-        BigDecimal finalAmount = pricingStrategy.calculateFinalPrice(
-            sub.getUser(), sub.getMonthlyFee()
-        );
-        // ... process subscription
-    }
+  public void processSubscription(Subscription sub) {
+    BigDecimal finalAmount = pricingStrategy.calculateFinalPrice(
+      sub.getUser(), sub.getMonthlyFee()
+    );
+    // ... process subscription
+  }
 }
 ```
 
@@ -99,11 +99,11 @@ Not all duplication is bad. Avoid premature abstraction:
 ```java
 // These look similar but serve different purposes - OK to duplicate
 public BigDecimal calculateShippingCost(Order order) {
-    return order.getWeight().multiply(SHIPPING_RATE);
+  return order.getWeight().multiply(SHIPPING_RATE);
 }
 
 public BigDecimal calculateInsuranceCost(Order order) {
-    return order.getValue().multiply(INSURANCE_RATE);
+  return order.getValue().multiply(INSURANCE_RATE);
 }
 // Don't force these into one method - they'll evolve differently
 ```
@@ -120,12 +120,12 @@ public BigDecimal calculateInsuranceCost(Order order) {
 // ❌ BAD: Over-engineered for simple task
 public class StringUtils {
 
-    public boolean isEmpty(String str) {
-        return Optional.ofNullable(str)
-            .map(String::trim)
-            .map(String::isEmpty)
-            .orElseGet(() -> Boolean.TRUE);
-    }
+  public boolean isEmpty(String str) {
+    return Optional.ofNullable(str)
+      .map(String::trim)
+      .map(String::isEmpty)
+      .orElseGet(() -> Boolean.TRUE);
+  }
 }
 ```
 
@@ -135,13 +135,13 @@ public class StringUtils {
 // ✅ GOOD: Simple and clear
 public class StringUtils {
 
-    public boolean isEmpty(String str) {
-        return StringUtils.isBlank(str) || str.trim().isEmpty();
-    }
+  public boolean isEmpty(String str) {
+    return StringUtils.isBlank(str) || str.trim().isEmpty();
+  }
 
-    // Or use existing library
-    // return StringUtils.isBlank(str);  // Apache Commons
-    // return str == null || str.isBlank();  // Java 11+
+  // Or use existing library
+  // return StringUtils.isBlank(str);  // Apache Commons
+  // return str == null || str.isBlank();  // Java 11+
 }
 ```
 
@@ -162,20 +162,20 @@ public class StringUtils {
 ```java
 // ❌ BAD: Building for hypothetical future
 public interface Repository<T, ID> {
-    T findById(ID id);
-    List<T> findAll();
-    List<T> findAll(Pageable pageable);
-    List<T> findAll(Sort sort);
-    List<T> findAllById(Iterable<ID> ids);
-    T save(T entity);
-    List<T> saveAll(Iterable<T> entities);
-    void delete(T entity);
-    void deleteById(ID id);
-    void deleteAll(Iterable<T> entities);
-    void deleteAll();
-    boolean existsById(ID id);
-    long count();
-    // ... 20 more methods "just in case"
+  T findById(ID id);
+  List<T> findAll();
+  List<T> findAll(Pageable pageable);
+  List<T> findAll(Sort sort);
+  List<T> findAllById(Iterable<ID> ids);
+  T save(T entity);
+  List<T> saveAll(Iterable<T> entities);
+  void delete(T entity);
+  void deleteById(ID id);
+  void deleteAll(Iterable<T> entities);
+  void deleteAll();
+  boolean existsById(ID id);
+  long count();
+  // ... 20 more methods "just in case"
 }
 
 // Current usage: only findById and save
@@ -186,8 +186,8 @@ public interface Repository<T, ID> {
 ```java
 // ✅ GOOD: Only what's needed now
 public interface UserRepository {
-    Optional<User> findById(Long id);
-    User save(User user);
+  Optional<User> findById(Long id);
+  User save(User user);
 }
 
 // Add methods when actually needed, not before
@@ -290,21 +290,21 @@ class ShippingCalculator { }
 ```java
 // ❌ BAD: 50+ line method doing multiple things
 public void processOrder(Order order) {
-    // validate order (10 lines)
-    // calculate totals (15 lines)
-    // apply discounts (10 lines)
-    // update inventory (10 lines)
-    // send notifications (10 lines)
-    // ... and more
+  // validate order (10 lines)
+  // calculate totals (15 lines)
+  // apply discounts (10 lines)
+  // update inventory (10 lines)
+  // send notifications (10 lines)
+  // ... and more
 }
 
 // ✅ GOOD: Small, focused methods
 public void processOrder(Order order) {
-    validateOrder(order);
-    calculateTotals(order);
-    applyDiscounts(order);
-    updateInventory(order);
-    sendNotifications(order);
+  validateOrder(order);
+  calculateTotals(order);
+  applyDiscounts(order);
+  updateInventory(order);
+  sendNotifications(order);
 }
 ```
 
@@ -313,30 +313,30 @@ public void processOrder(Order order) {
 ```java
 // ❌ BAD: Mixed abstraction levels
 public void processOrder(Order order) {
-    validateOrder(order);  // High level
+  validateOrder(order);  // High level
 
-    // Low level mixed in
-    BigDecimal total = BigDecimal.ZERO;
-    for (OrderItem item : order.getItems()) {
-        total = total.add(item.getPrice().multiply(
-            BigDecimal.valueOf(item.getQuantity())));
-    }
+  // Low level mixed in
+  BigDecimal total = BigDecimal.ZERO;
+  for (OrderItem item : order.getItems()) {
+    total = total.add(item.getPrice().multiply(
+      BigDecimal.valueOf(item.getQuantity())));
+  }
 
-    sendEmail(order);  // High level again
+  sendEmail(order);  // High level again
 }
 
 // ✅ GOOD: Consistent abstraction level
 public void processOrder(Order order) {
-    validateOrder(order);
-    calculateTotal(order);
-    sendConfirmation(order);
+  validateOrder(order);
+  calculateTotal(order);
+  sendConfirmation(order);
 }
 
 private BigDecimal calculateTotal(Order order) {
-    return order.getItems().stream()
-        .map(item -> item.getPrice().multiply(
-            BigDecimal.valueOf(item.getQuantity())))
-        .reduce(BigDecimal.ZERO, BigDecimal::add);
+  return order.getItems().stream()
+    .map(item -> item.getPrice().multiply(
+      BigDecimal.valueOf(item.getQuantity())))
+    .reduce(BigDecimal.ZERO, BigDecimal::add);
 }
 ```
 
@@ -345,20 +345,20 @@ private BigDecimal calculateTotal(Order order) {
 ```java
 // ❌ BAD: Too many parameters
 public User createUser(String firstName, String lastName,
-                       String email, String phone,
-                       String address, String city,
-                       String country, String zipCode) {
-    // ...
+  String email, String phone,
+  String address, String city,
+  String country, String zipCode) {
+  // ...
 }
 
 // ✅ GOOD: Use parameter object
 public User createUser(CreateUserRequest request) {
-    // ...
+  // ...
 }
 
 // Or builder
 public User createUser(UserBuilder builder) {
-    // ...
+  // ...
 }
 ```
 
@@ -367,20 +367,20 @@ public User createUser(UserBuilder builder) {
 ```java
 // ❌ BAD: Boolean flag changes behavior
 public void sendMessage(String message, boolean isUrgent) {
-    if (isUrgent) {
-        // send immediately
-    } else {
-        // queue for later
-    }
+  if (isUrgent) {
+    // send immediately
+  } else {
+    // queue for later
+  }
 }
 
 // ✅ GOOD: Separate methods
 public void sendUrgentMessage(String message) {
-    // send immediately
+  // send immediately
 }
 
 public void queueMessage(String message) {
-    // queue for later
+  // queue for later
 }
 ```
 
@@ -400,7 +400,7 @@ counter++;
 
 // Check if user is null
 if (user != null) {
-    // ...
+  // ...
 }
 ```
 
@@ -412,8 +412,8 @@ if (user != null) {
 // Retry with exponential backoff to avoid overwhelming the server
 // during high load periods (see incident #1234)
 for (int attempt = 0; attempt < MAX_RETRIES; attempt++) {
-    Thread.sleep((long) Math.pow(2, attempt) * 1000);
-    // ...
+  Thread.sleep((long) Math.pow(2, attempt) * 1000);
+  // ...
 }
 
 // TODO: Replace with Redis cache after infrastructure upgrade (Q2 2026)
@@ -428,16 +428,14 @@ calculateTax(order);
 
 ```java
 // ❌ BAD: Comment explaining bad code
-// Check if the user is an admin or has special permission
-// and the action is allowed for their role
-if ((user.getRole() == 1 || user.getRole() == 2) &&
-    (action == 3 || action == 4 || action == 7)) {
-    // ...
+if ((user.getRole() == 1 || user.getRole() == 2)
+  && (action == 3 || action == 4 || action == 7)) {
+  // ...
 }
 
 // ✅ GOOD: Self-documenting code
 if (user.hasAdminPrivileges() && action.isAllowedFor(user.getRole())) {
-    // ...
+  // ...
 }
 ```
 
@@ -479,26 +477,26 @@ Thread.sleep(ONE_DAY_MS);
 ```java
 // ❌ BAD: Primitives everywhere
 public void createUser(String email, String phone, String zipCode) {
-    // No validation, easy to mix up parameters
+  // No validation, easy to mix up parameters
 }
 
 createUser("12345", "john@email.com", "555-1234");  // Wrong order, compiles!
 
 // ✅ GOOD: Value objects
 public record Email(String value) {
-    public Email {
-        if (!value.contains("@")) {
-            throw new IllegalArgumentException("Invalid email");
-        }
+  public Email {
+    if (!value.contains("@")) {
+      throw new IllegalArgumentException("Invalid email");
     }
+  }
 }
 
 public record PhoneNumber(String value) {
-    // validation
+  // validation
 }
 
 public void createUser(Email email, PhoneNumber phone, ZipCode zipCode) {
-    // Type-safe, self-validating
+  // Type-safe, self-validating
 }
 ```
 
@@ -521,22 +519,28 @@ public void createUser(Email email, PhoneNumber phone, ZipCode zipCode) {
 ```java
 // ❌ BAD: Deeply nested
 public void processOrder(Order order) {
-    if (order != null) {
-        if (order.isValid()) {
-            if (order.hasItems()) {
-                // actual logic buried here
-            }
-        }
+  if (order != null) {
+    if (order.isValid()) {
+      if (order.hasItems()) {
+        // actual logic buried here
+      }
     }
+  }
 }
 
 // ✅ GOOD: Guard clauses
 public void processOrder(Order order) {
-    if (order == null) return;
-    if (!order.isValid()) return;
-    if (!order.hasItems()) return;
+  if (order == null) {
+    return;
+  }
+  if (!order.isValid()) {
+    return;
+  }
+  if (!order.hasItems()) {
+    return;
+  }
 
-    // actual logic at top level
+  // actual logic at top level
 }
 ```
 
