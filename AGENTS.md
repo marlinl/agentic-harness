@@ -10,6 +10,7 @@ Platform-agnostic agent constraint framework with reusable skills for Java web e
 | `clean-code` | Writing or refactoring code (DRY, KISS, YAGNI) |
 | `spring-boot-patterns` | Controllers, services, repos, REST APIs |
 | `jpa-patterns` | JPA performance, lazy loading, N+1 |
+| `java-patterns` | Naming, formatting, class design, modern Java features |
 | `test-quality` | Writing tests, improving coverage |
 | `logging-patterns` | Setting up logging, structured logs |
 | `maven-dependency-audit` | Auditing dependencies, security scanning |

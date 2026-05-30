@@ -26,21 +26,20 @@ src/main/java/com/example/myapp/
 │   ├── UserService.java
 │   └── impl/
 │       └── UserServiceImpl.java
-|── handler/                        # Independent process handlers (optional)
+├── handler/                        # Global handlers
 │   └── GlobalExceptionHandler.java # @RestControllerAdvice
 ├── repository/                    # Data access
 │   └── UserRepository.java
 ├── model/                         # Entities
 │   └── User.java
-├── dto/    
+├── dto/
 │   └── UserDTO.java               # Data transfer objects
 ├── request/                       # REST request objects
 │   └── CreateUserRequest.java
-└── response/                      # REST response objects
+├── response/                      # REST response objects
 │   └── UserResponse.java
 ├── exception/                     # Custom exceptions
-│   ├── ResourceNotFoundException.java
-│   └── GlobalExceptionHandler.java
+│   └── ResourceNotFoundException.java
 └── util/                          # Utilities
     └── DateUtils.java
 ```
@@ -101,8 +100,8 @@ public class UserController {
 
 | Practice | Example |
 |----------|---------|
-| Versioned API | `/user` |
-| Plural nouns | `/user` not `/users` |
+| Clean paths | `/users` (version via header or config, not in path) |
+| Nouns | Plural for collections (`/users`), singular for single-resource (`/profile`) |
 | HTTP methods | GET=read, POST=create, PUT=update, DELETE=delete |
 | Status codes | 200=OK, 201=Created, 204=NoContent, 404=NotFound |
 | Validation | `@Valid` on request body |
@@ -438,7 +437,7 @@ class UserControllerTest {
         when(userService.findById(1L))
             .thenReturn(new UserResponse(1L, "John", "john@example.com", null));
 
-        mockMvc.perform(get("/api/v1/users/1"))
+        mockMvc.perform(get("/users/1"))
             .andExpect(status().isOk())
             .andExpect(jsonPath("$.name").value("John"));
     }
@@ -482,7 +481,7 @@ class UserIntegrationTest {
 
     @Test
     void shouldCreateUser() throws Exception {
-        mockMvc.perform(post("/api/v1/users")
+        mockMvc.perform(post("/users")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content("""
                     {"name": "John", "email": "john@example.com", "age": 25}

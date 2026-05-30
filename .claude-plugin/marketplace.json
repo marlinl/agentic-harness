@@ -102,6 +102,22 @@
       "category": "development"
     },
     {
+      "name": "java-patterns",
+      "source": "./skills/java-patterns",
+      "description": "Java 21+/25 coding patterns, style, and conventions based on MarlinLCodeStyle — naming, formatting, imports, wrapping, class design, records, exceptions, null handling, and modern language features.",
+      "version": "1.0.0",
+      "author": {
+        "name": "MarlinL"
+      },
+      "keywords": [
+        "java",
+        "conventions",
+        "formatting",
+        "naming"
+      ],
+      "category": "development"
+    },
+    {
       "name": "test-quality",
       "source": "./skills/test-quality",
       "description": "Write high-quality JUnit 5 tests with AssertJ assertions and maintainable test structure.",
