@@ -6,6 +6,7 @@ Platform-agnostic agent constraint framework with reusable skills for Java web e
 
 | Skill | When to use |
 |-------|-------------|
+| `design-doc` | Requirement specs, API design, technical design docs (4C structure) |
 | `agent-designer` | Designing multi-agent systems, agent architectures |
 | `clean-code` | Writing or refactoring code (DRY, KISS, YAGNI) |
 | `spring-boot-patterns` | Controllers, services, repos, REST APIs |

@@ -12,6 +12,23 @@
   },
   "plugins": [
     {
+      "name": "design-doc",
+      "source": "./skills/design-doc",
+      "description": "Write technical design documents using the 4C structure (Context, Contract, Core Logic, Corners) with Swagger/OpenAPI specs.",
+      "version": "1.0.0",
+      "author": {
+        "name": "MarlinL"
+      },
+      "keywords": [
+        "design",
+        "document",
+        "requirements",
+        "api",
+        "swagger"
+      ],
+      "category": "development"
+    },
+    {
       "name": "agent-designer",
       "source": "./skills/agent-designer",
       "description": "Design multi-agent systems, agent architectures, communication patterns, and autonomous workflows.",

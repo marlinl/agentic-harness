@@ -1,0 +1,13 @@
+{
+  "name": "design-doc",
+  "description": "Write technical design documents using the 4C structure (Context, Contract, Core Logic, Corners). Generates Swagger/OpenAPI specs for API designs and cross-references related documents.",
+  "version": "1.0.0",
+  "author": {
+    "name": "MarlinL",
+    "url": "https://github.com/marlinl"
+  },
+  "homepage": "https://github.com/marlinl/agentic-harness/tree/main/skills/design-doc",
+  "repository": "https://github.com/marlinl/agentic-harness",
+  "license": "BSD-2-Clause",
+  "skills": "./"
+}

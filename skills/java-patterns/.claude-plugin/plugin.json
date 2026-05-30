@@ -1,0 +1,13 @@
+{
+  "name": "java-patterns",
+  "description": "Java 21+/25 coding patterns, style, and conventions based on MarlinLCodeStyle — naming, formatting, imports, wrapping, class design, records, exceptions, null handling, and modern language features.",
+  "version": "1.0.0",
+  "author": {
+    "name": "MarlinL",
+    "url": "https://github.com/marlinl"
+  },
+  "homepage": "https://github.com/marlinl/agentic-harness/tree/main/skills/java-patterns",
+  "repository": "https://github.com/marlinl/agentic-harness",
+  "license": "BSD-2-Clause",
+  "skills": "./"
+}

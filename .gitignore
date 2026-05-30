@@ -7,12 +7,6 @@
 .DS_Store
 Thumbs.db
 
-# Settings export (source of truth is MarlinLCodeStyle.xml if needed, not the zip)
-settings.zip
-
-# Comparison reference (not part of the skill collection)
-java-patterns/
-
 # Temp
 *.tmp
 *.bak
